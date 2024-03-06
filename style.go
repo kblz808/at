@@ -69,7 +69,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if ok {
 				m.choice = i
 			}
-			changeTheme(m.choice)
+			applyTheme(m.choice)
 			return m, nil
 		}
 	}
