@@ -73,23 +73,11 @@ func LoadConfig() (map[string]interface{}, error) {
 		log.Panic("import array not found")
 	}
 
-	// lines := strings.Split(string(content), "\n")
-
-	// lines[1] = fmt.Sprintf("\t \"~/.config/alacritty/themes/themes/%s.toml\"", th.name)
-
-	// newContent := strings.Join(lines, "\n")
-
-	// err = os.WriteFile(filePath, []byte(newContent), 0644)
-	// if err != nil {
-	// fmt.Println("error: ", err)
-	// return
-	// }
-
 	return cfg, nil
 }
 
-func saveConfig(config string) error {
-	err := os.WriteFile(filePath, []byte(config), 0644)
+func saveConfig(config []byte) error {
+	err := os.WriteFile(filePath, config, 0644)
 	return err
 }
 
@@ -99,21 +87,20 @@ func applyTheme(th theme) {
 		log.Panic(err)
 	}
 
-	import_array_interface, ok := config["import"].([]interface{})
+	import_array, ok := config["import"].([]interface{})
 	if ok {
-		import_array_string := make([]string, len(import_array_interface))
-		for i, v := range import_array_interface {
-			switch value := v.(type) {
-			case string:
-				import_array_string[i] = value
-			default:
-				fmt.Printf("Failed to convert element at index %d to string\n", i)
-			}
-		}
-		fmt.Printf("%+v\n", import_array_string)
+		data := fmt.Sprintf("~/.config/alacritty/themes/themes/%s.toml", th.name)
+		import_array = import_array[:len(import_array)-1]
+		import_array = append(import_array, data)
+		config["import"] = import_array
 	} else {
 		println("not ok")
 	}
 
-	// saveConfig("")
+	b, err := toml.Marshal(config)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	saveConfig(b)
 }
