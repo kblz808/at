@@ -9,13 +9,13 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+const defaultWidth = 20
+
 func main() {
 	items, err := getThemes()
 	if err != nil {
 		log.Panic(err)
 	}
-
-	const defaultWidth = 20
 
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
 	l.Title = "select theme"

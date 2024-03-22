@@ -61,16 +61,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
-		case "q", "ctrl+c":
+		case "q", "ctrl+c", "enter":
 			m.quitting = true
 			return m, tea.Quit
-		case "enter":
+		case "up", "down", "left", "right", "j", "k", "h", "l":
 			i, ok := m.list.SelectedItem().(theme)
 			if ok {
 				m.choice = i
 			}
 			applyTheme(m.choice)
-			return m, nil
 		}
 	}
 
