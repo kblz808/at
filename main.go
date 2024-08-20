@@ -11,12 +11,7 @@ import (
 
 const defaultWidth = 20
 
-func main() {
-	items, err := getThemes()
-	if err != nil {
-		log.Panic(err)
-	}
-
+func newList(items []list.Item) list.Model {
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
 	l.Title = "select theme"
 	l.SetShowStatusBar(true)
@@ -25,6 +20,16 @@ func main() {
 	l.Styles.PaginationStyle = paginationStyle
 	l.Styles.HelpStyle = helpStyle
 
+	return l
+}
+
+func main() {
+	items, err := getThemes()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	l := newList(items)
 	m := model{list: l}
 
 	if _, err := tea.NewProgram(m).Run(); err != nil {

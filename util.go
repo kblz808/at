@@ -11,7 +11,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-var filePath string
+var configPath string
 
 func getThemes() ([]list.Item, error) {
 	items := []list.Item{}
@@ -54,9 +54,9 @@ func LoadConfig() (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	filePath = filepath.Join(homeDir, ".config", "alacritty", "alacritty.toml")
+	configPath = filepath.Join(homeDir, ".config", "alacritty", "alacritty.toml")
 
-	content, err := os.ReadFile(filePath)
+	content, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println("error: ", err)
 		return nil, err
@@ -76,7 +76,7 @@ func LoadConfig() (map[string]interface{}, error) {
 }
 
 func saveConfig(config []byte) error {
-	err := os.WriteFile(filePath, config, 0644)
+	err := os.WriteFile(configPath, config, 0644)
 	return err
 }
 
@@ -93,7 +93,7 @@ func applyTheme(th theme) {
 		import_array = append(import_array, data)
 		config["import"] = import_array
 	} else {
-		println("not ok")
+		log.Fatalf("couldnt parse config file")
 	}
 
 	b, err := toml.Marshal(config)
