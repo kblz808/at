@@ -1,3 +1,3 @@
 # at
 
-![](demo/rec.mp4)
+![](./demo/rec.mp4)
