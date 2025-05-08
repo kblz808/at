@@ -45,8 +45,8 @@ func getThemes() ([]list.Item, error) {
 	return items, nil
 }
 
-func LoadConfig() (map[string]interface{}, error) {
-	var cfg map[string]interface{}
+func LoadConfig() (map[string]any, error) {
+	var cfg map[string]any
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -67,9 +67,11 @@ func LoadConfig() (map[string]interface{}, error) {
 		log.Panic(err)
 	}
 
-	_, ok := cfg["import"]
+	_, ok := cfg["general"].(map[string]any)
 	if !ok {
-		cfg["import"] = []interface{}{""}
+		import_array := []any{}
+		cfg["general"] = import_array
+		log.Printf("no general settings found... creating one: %v", cfg)
 	}
 
 	return cfg, nil
@@ -86,13 +88,21 @@ func applyTheme(th theme) {
 		log.Panic(err)
 	}
 
-	import_array, ok := config["import"].([]interface{})
+	general, ok := config["general"].(map[string]any)
+	if !ok {
+		log.Fatalf("failed to load general settings")
+	}
+
+	import_array, ok := general["import"].([]any)
 	if ok {
 		data := fmt.Sprintf("~/.config/alacritty/themes/%s.toml", th.name)
-		import_array = import_array[:len(import_array)-1]
+		import_array = import_array[:]
 		import_array = append(import_array, data)
-		config["import"] = import_array
+
+		general["import"] = import_array
+		config["general"] = general
 	} else {
+		log.Println(general)
 		log.Fatalf("couldnt parse config file")
 	}
 
