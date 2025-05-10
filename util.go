@@ -69,7 +69,7 @@ func LoadConfig() (map[string]any, error) {
 
 	_, ok := cfg["general"].(map[string]any)
 	if !ok {
-		import_array := []any{}
+		import_array := map[string]any{"import": []any{}}
 		cfg["general"] = import_array
 		log.Printf("no general settings found... creating one: %v", cfg)
 	}
