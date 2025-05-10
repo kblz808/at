@@ -96,7 +96,7 @@ func applyTheme(th theme) {
 	import_array, ok := general["import"].([]any)
 	if ok {
 		data := fmt.Sprintf("~/.config/alacritty/themes/%s.toml", th.name)
-		import_array = import_array[:]
+		import_array = import_array[:max(0, len(import_array)-2)]
 		import_array = append(import_array, data)
 
 		general["import"] = import_array
